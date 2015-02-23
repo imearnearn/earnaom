@@ -26,8 +26,8 @@ public class MainActivity extends ActionBarActivity {
             Intent i = new Intent(this, cal.class);
             startActivity(i);
         }
-        if(v.getId()==R.id.history){
-            Intent i = new Intent(this, MainActivity.class);
+        if(v.getId()== R.id.his){
+            Intent i = new Intent(this, history.class);
             startActivity(i);
         }
     }

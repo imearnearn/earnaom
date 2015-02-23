@@ -23,10 +23,7 @@ public class cal extends ActionBarActivity {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
         }
-        if(v.getId()==R.id.history){
-            Intent i = new Intent(this, cal.class);
-            startActivity(i);
-        }
+
     }
 
     @Override
