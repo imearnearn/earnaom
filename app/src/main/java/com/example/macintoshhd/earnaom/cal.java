@@ -1,456 +1,183 @@
 package com.example.macintoshhd.earnaom;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.RadioGroup;
+
 import android.widget.TextView;
+
 
 
 public class cal extends ActionBarActivity {
 
 
+    StringBuffer expr;
+    double mem;
+    char recent;
+
+    public void hiscur (View v) {
+        if(v.getId()==R.id.currency){
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
+        }
+        if(v.getId()==R.id.history){
+            Intent i = new Intent(this, cal.class);
+            startActivity(i);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.p2);
+        expr = new StringBuffer();
+        updateExprDisplay();
+    }
+
+    public void updateExprDisplay() {
+        TextView shownum = (TextView) findViewById(R.id.shownum);
+        shownum.setText(expr.toString());
+
+    }
+
+    public void updateAnsDisplay(String s) {
+        TextView shownum = (TextView) findViewById(R.id.shownum);
+        shownum.setText(s);
+    }
+
+    public void equalClicked(View v) {
+        expr = new StringBuffer();
+
+        TextView tv = (TextView) findViewById(R.id.shownum);
+        String s = tv.getText().toString();
+        expr.append(s);
+        recalculate();
+        updateExprDisplay();
+
+        expr = new StringBuffer();
+
+
     }
 
 
 
-    public void buttonClicked (View v){
-        TextView tv = (TextView)findViewById(R.id.tvOutput);
+    public void recalculate() {
+        //Calculate the expression and display the output
+        //Split expr into numbers and operators
 
-        EditText Input = (EditText)findViewById(R.id.Input);
-        String s = Input.getText().toString();
+        String e = expr.toString();
+        String[] tokens = e.split("((?<=\\+)|(?=\\+))|((?<=\\-)|(?=\\-))|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))");
+        if (!tokens[0].equals("")) {
 
-        RadioGroup From = (RadioGroup)findViewById(R.id.From);
-        RadioGroup To = (RadioGroup)findViewById(R.id.To);
-
-        double curr = Double.parseDouble(s);
-        int selFrom = From.getCheckedRadioButtonId();
-        int selTo = To.getCheckedRadioButtonId();
-
-        if (selFrom == R.id.FrTHB) { // convert currency from Thai baht 1
-
-            if (selTo == R.id.ToBND){
-                double result = ( curr *0.04);
-                tv.setText(Double.toString(result));
+            double result;
+            result = Double.parseDouble(tokens[0]);
+            for (int i = 1; i < tokens.length - 1; i++) {
+                if (tokens[i].equals("+")) {
+                    result += Double.parseDouble(tokens[i + 1]);
+                } else if (tokens[i].equals("-")) {
+                    result -= Double.parseDouble(tokens[i + 1]);
+                } else if (tokens[i].equals("*")) {
+                    result *= Double.parseDouble(tokens[i + 1]);
+                } else if (tokens[i].equals("/")) {
+                    result /= Double.parseDouble(tokens[i + 1]);
+                }
             }
+          expr = new StringBuffer();
+            expr.append(result);
 
-            if (selTo == R.id.ToIDR){
-                double result = (curr*395.04);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToKHR){
-                double result = (curr*124.56);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToVND){
-                double result = (curr*654.95);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToLAK){
-                double result = (curr*249);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMMK){
-                double result = (curr*31.71);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMYR){
-                double result = (curr * 0.11);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToPHP){
-                double result = (curr*1.36);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToSGD){
-                double result = (curr*0.04);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToTHB){
-                tv.setText(Double.toString(curr));
-            }
+        } else {
+            updateAnsDisplay(Double.toString(0));
         }
+    }
 
-        if (selFrom == R.id.FrVND) { // convert currency from VND 2
 
-            if (selTo == R.id.ToBND){
-                double result = ( curr *0.000064);
-                tv.setText(Double.toString(result));
-            }
 
-            if (selTo == R.id.ToIDR){
-                double result = (curr*0.61);
-                tv.setText(Double.toString(result));
-            }
 
-            if (selTo == R.id.ToKHR){
-                double result = (curr*0.2);
-                tv.setText(Double.toString(result));
-            }
+    public void digitClicked(View v) {
+        //d = the label of the digit button
+        String d = ((TextView) v).getText().toString();
+        //append the clicked digit to expr
+        expr.append(d);
 
-            if (selTo == R.id.ToTHB){
-                double result = (curr*0.0015);
-                tv.setText(Double.toString(result));
-            }
+        //update tvExpr
+        updateExprDisplay();
 
-            if (selTo == R.id.ToLAK){
-                double result = (curr*0.4);
-                tv.setText(Double.toString(result));
-            }
 
-            if (selTo == R.id.ToMMK){
-                double result = (curr*0.05);
-                tv.setText(Double.toString(result));
-            }
+        //calculate the result if possible and update tvAns
+        //recalculate();
+    }
 
-            if (selTo == R.id.ToMYR){
-                double result = (curr * 0.0002);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToPHP){
-                double result = (curr*0.0021);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToSGD){
-                double result = (curr*0.000064);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToVND){
-                tv.setText(Double.toString(curr));
-            }
+    public void operatorClicked(View v) {
+        //IF the last character in expr is not an operator and expr is not "",
+        if (!expr.toString().isEmpty() && !isOperand(expr.charAt(expr.length() - 1))) {
+            String d = ((TextView) v).getText().toString();
+            //append the clicked digit to expr
+           expr.append(d);
+            //update tvExpr
+            updateExprDisplay();
         }
-
-        if (selFrom == R.id.FrSGD) { // convert currency from singapore 3
-
-            if (selTo == R.id.ToBND){
-                double result = ( curr *1);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToIDR){
-                double result = (curr*9475.11);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToKHR){
-                double result = (curr*2993.39);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToTHB){
-                double result = (curr*23.94);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToLAK){
-                double result = (curr*5970.66);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMMK){
-                double result = (curr*758.747);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToVND){
-                double result = (curr * 15670.99);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToPHP){
-                double result = (curr*32.498);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMYR){
-                double result = (curr*2.668);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToSGD){
-                tv.setText(Double.toString(curr));
-            }
-        }
-
-        if (selFrom == R.id.FrIDR) { // convert currency from IDR 4
-
-            if (selTo == R.id.ToBND){
-                double result = ( curr *0.0001);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToTHB){
-                double result = (curr*0.0025);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToKHR){
-                double result = (curr*0.32);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToVND){
-                double result = (curr*1.66);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToLAK){
-                double result = (curr*0.63);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMMK){
-                double result = (curr*0.08);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMYR){
-                double result = (curr * 0.00028);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToPHP){
-                double result = (curr*0.0034);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToSGD){
-                double result = (curr*0.0001);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToIDR){
-                tv.setText(Double.toString(curr));
-            }
-        }
-
-        if (selFrom == R.id.FrLAK) { // convert currency from Lao 5
-
-            if (selTo == R.id.ToBND){
-                double result = ( curr *0.00012);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToIDR){
-                double result = (curr*1.586);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToKHR){
-                double result = (curr*0.5);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToVND){
-                double result = (curr*2.62);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToTHB){
-                double result = (curr*0.004);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMMK){
-                double result = (curr*0.13);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMYR){
-                double result = (curr *0.00045);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToPHP){
-                double result = (curr*0.005);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToSGD){
-                double result = (curr*0.0002);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToLAK){
-                tv.setText(Double.toString(curr));
-            }
-        }
-
-        if (selFrom == R.id.FrKHR) { // convert currency from Cambodia 6
-
-            if (selTo == R.id.ToBND){
-                double result = ( curr *0.00033);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToIDR){
-                double result = (curr*3.16558);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToTHB){
-                double result = (curr*0.008);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToVND){
-                double result = (curr*5.23);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToLAK){
-                double result = (curr*2);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMMK){
-                double result = (curr*0.25);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMYR){
-                double result = (curr * 0.0009);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToPHP){
-                double result = (curr*0.01);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToSGD){
-                double result = (curr*0.00033);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToKHR){
-                tv.setText(Double.toString(curr));
-            }
-        }
-
-        if (selFrom == R.id.FrMMK) { // convert currency from mmk burmese 7
-
-            if (selTo == R.id.ToBND){
-                double result = ( curr *0.0013);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToIDR){
-                double result = (curr*12.48);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToKHR){
-                double result = (curr*3.5);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToVND){
-                double result = (curr*20.66);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToLAK){
-                double result = (curr*7.87);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToTHB){
-                double result = (curr*0.032);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMYR){
-                double result = (curr * 0.004);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToPHP){
-                double result = (curr*0.043);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToSGD){
-                double result = (curr*0.0013);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMMK){
-                tv.setText(Double.toString(curr));
-            }
-        }
-
-        if (selFrom == R.id.FrMYR) { // convert currency from MYR 8
-
-            if (selTo == R.id.ToBND){
-                double result = ( curr *0.04);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToIDR){
-                double result = (curr*395.04);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToKHR){
-                double result = (curr*124.56);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToVND){
-                double result = (curr*654.95);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToLAK){
-                double result = (curr*249);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMMK){
-                double result = (curr*31.71);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToTHB){
-                double result = (curr * 0.11);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToPHP){
-                double result = (curr*1.36);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToSGD){
-                double result = (curr*0.04);
-                tv.setText(Double.toString(result));
-            }
-
-            if (selTo == R.id.ToMYR){
-                tv.setText(Double.toString(curr));
-            }
-        }
+        //THEN append the clicked operator and updateExprDisplay,
+        //ELSE do nothing
 
     }
+
+    private boolean isOperand(char c) {
+        return c == '/' || c == '+' || c == '-' || c == '*';
+    }
+
+    public void hkclicked(View v) {
+        TextView shownum = (TextView) findViewById(R.id.shownum);
+        String s = shownum.getText().toString();
+        mem = Double.parseDouble(s)*4.2;
+
+        updateAnsDisplay(Double.toString(mem));
+       expr = new StringBuffer();
+
+
+    }
+    public void krclicked(View v) {
+        TextView shownum = (TextView) findViewById(R.id.shownum);
+        String s = shownum.getText().toString();
+        mem = Double.parseDouble(s)*0.03;
+
+        updateAnsDisplay(Double.toString(mem));
+        expr = new StringBuffer();
+
+
+    }
+    public void cnlicked(View v) {
+        TextView shownum = (TextView) findViewById(R.id.shownum);
+        String s = shownum.getText().toString();
+        mem = Double.parseDouble(s)*5.22;
+
+        updateAnsDisplay(Double.toString(mem));
+        expr = new StringBuffer();
+
+    }
+    public void jpclicked(View v) {
+        TextView shownum = (TextView) findViewById(R.id.shownum);
+        String s = shownum.getText().toString();
+        mem = Double.parseDouble(s)*0.27;
+
+        updateAnsDisplay(Double.toString(mem));
+        expr = new StringBuffer();
+
+    }
+
+
+
+
+
+    public void ACClicked(View v) {
+        //Clear expr and updateExprDisplay
+        expr = new StringBuffer();
+        updateExprDisplay();
+
+    }
+
 
 
     @Override
@@ -474,4 +201,5 @@ public class cal extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
