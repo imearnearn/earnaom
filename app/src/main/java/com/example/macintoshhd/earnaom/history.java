@@ -1,8 +1,6 @@
 package com.example.macintoshhd.earnaom;
 
-/**
- * Created by student on 2/23/15 AD.
- */
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
@@ -22,24 +20,42 @@ public class history extends ActionBarActivity implements AdapterView.OnItemLong
     SimpleCursorAdapter adapter;
 
     @Override
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.his_tory);
 
         helper = new DB(this);
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT money,from,to,result( || '( Credit ' || credit || ')' ) g FROM course ORDER BY _id DESC;",null);
+        Cursor cursor = db.rawQuery("SELECT _id,(cinput ||' From : '|| cfrom) a," +
+                "(coutput || ' To : '||cto) b FROM currency;",null);
         cursor.moveToFirst();
 
         adapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2,
                 cursor,
-                new String[] {"code","g"},
+                new String[] {"a","b"},
                 new int[] {android.R.id.text1,android.R.id.text2},0);
         ListView lv = (ListView)findViewById(R.id.listView);
         lv.setAdapter(adapter);
         lv.setOnItemLongClickListener(this);
     }
+
+    public void bClicked (View v) {
+        if(v.getId()==R.id.home){
+            Intent i = new Intent(this, firstpage.class);
+            startActivity(i);
+        }
+        if(v.getId()==R.id.reset){
+            SQLiteDatabase db = helper.getWritableDatabase();
+            db.delete("currency", "", null);
+            Cursor cursor = db.rawQuery("SELECT _id,(cinput ||' From : '|| cfrom) a," +
+                    "(coutput || ' To : '||cto) b FROM currency;",null);
+            adapter.changeCursor(cursor);
+        }
+    }
+
     public boolean onItemLongClick(AdapterView<?> parent, View view,int position, long id){
         SQLiteDatabase db = helper.getWritableDatabase();
         int n = db.delete("course","_id = ?",new String[]{Long.toString(id)});

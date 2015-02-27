@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:background="#4bebffa4">
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="406dp"
         android:id="@+id/listView"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.58"
+        android:background="#5dffafd4" />
+
+    <Button
+        android:layout_width="139dp"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:id="@+id/home"
+        android:layout_gravity="center_horizontal"
+        android:onClick="bClicked"
+        android:textColor="#ffff8099"
+        android:textSize="20dp" />
+
+    <Button
+        android:layout_width="143dp"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:id="@+id/reset"
+        android:layout_gravity="center_horizontal"
+        android:onClick="bClicked"
+        android:textSize="20dp"
+        android:textColor="#ff5058ff" />
+
 </LinearLayout>
