@@ -1,5 +1,5 @@
 package com.example.macintoshhd.earnaom;
-import android.content.Intent;
+
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -32,65 +32,68 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class MicroblogActivity extends ActionBarActivity implements Runnable {
+public class chatactivity extends ActionBarActivity implements  Runnable{
+
     int timestamp = 0;
     ArrayList<Map<String, String>> data;
     SimpleAdapter adapter;
-    String user,courseid;
+    String name;
     long lastUpdate = 0;
     Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_microblog);
+        setContentView(R.layout.activity_chatactivity);
         data = new ArrayList<Map<String, String>>();
         adapter = new SimpleAdapter(this,
                 data,
-                R.layout.microblog_list_item,
-                new String[] {"user", "message","time"},
-                new int[] {R.id.tvSay, R.id.tvMessage,R.id.tvCTime});
+                android.R.layout.simple_list_item_2,
+                new String[] {"user", "message"},
+                new int[] {android.R.id.text1, android.R.id.text2});
         ListView l = (ListView)findViewById(R.id.listView);
         l.setAdapter(adapter);
         LoadMessageTask task = new LoadMessageTask();
         task.execute();
 
-        Intent i = this.getIntent();
-        user = i.getStringExtra("currentuser");
-        courseid = i.getStringExtra("courseid");
-
         handler = new Handler();
         handler.postDelayed(this, 30000);
     }
 
+    @Override
     public void run() {
         LoadMessageTask task = new LoadMessageTask();
         task.execute();
-        handler.postDelayed(this, 30000);
-
+        handler.postDelayed(this,30000);
     }
 
+    @Override
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(this);
     }
 
     public void buttonClicked(View v) {
-        EditText etMessage = (EditText)findViewById(R.id.etMessage);
-        String message = etMessage.getText().toString().trim();
-        etMessage.setText("");
-        if (message.length() > 0) {
-            PostMessageTask p = new PostMessageTask();
-            p.execute(user, message);
-        }
+        EditText etName = (EditText)findViewById(R.id.etName);
+        name = etName.getText().toString().trim();
+        EditText etDeparture = (EditText)findViewById(R.id.etDeparture);
+        String departure = etDeparture.getText().toString().trim();
+        EditText etArrival = (EditText)findViewById(R.id.etArrival);
+        String arrival = etArrival.getText().toString().trim();
+        EditText etCountry = (EditText)findViewById(R.id.etCountry);
+        String country = etCountry.getText().toString().trim();
+        EditText etExpenses = (EditText)findViewById(R.id.etExpenses);
+        String expenses = etExpenses.getText().toString().trim();
+
+        PostMessageTask p = new PostMessageTask();
+        p.execute(name,departure,arrival,country,expenses);
+
     }
 
     class LoadMessageTask extends AsyncTask<String, Void, Boolean> {
@@ -102,19 +105,22 @@ public class MicroblogActivity extends ActionBarActivity implements Runnable {
             String line;
 
             try {
-                //Log.e("LoadMessageTask", "" + timestamp);
-                URL u = new URL("http://ict.siit.tu.ac.th/~u5522781541/timetable/fetch.php?time="
-                        +timestamp+ "&subj=" +courseid);
+                Log.e("LoadMessageTask", "" + timestamp);
+                URL u = new URL("http://ict.siit.tu.ac.th/~u5522781285/fetch.php?time="
+                        + timestamp);
                 HttpURLConnection h = (HttpURLConnection)u.openConnection();
                 h.setRequestMethod("GET");
                 h.setDoInput(true);
                 h.connect();
+
                 int response = h.getResponseCode();
                 if (response == 200) {
                     reader = new BufferedReader(new InputStreamReader(h.getInputStream()));
                     while((line = reader.readLine()) != null) {
                         buffer.append(line);
                     }
+
+                    Log.e("LoadMessageTask", buffer.toString());
                     //Parsing JSON and displaying messages
 
                     //To append a new message:
@@ -125,36 +131,21 @@ public class MicroblogActivity extends ActionBarActivity implements Runnable {
                     JSONObject json = new JSONObject(buffer.toString());
                     boolean res = json.getBoolean("response");
                     String error = json.getString("errmsg");
-
-
-                    if(res == true){
+                    if(res){
                         timestamp = json.getInt("timestamp");
                         JSONArray msg = json.getJSONArray("msg");
-                        //fotmatting timestamp
-                        long dv = Long.valueOf(Integer.toString(timestamp))*1000;
-                        Date df = new java.util.Date(dv);
-                        String vv = new SimpleDateFormat("MM/dd/yyyy hh:mma").format(df);
 
-                        for(int i = 0; i<msg.length(); i++)
-                        {
-                            JSONObject msgele = msg.getJSONObject(i);
-                            Map<String,String> item = new HashMap<String,String>();
-                            item.put("user",msgele.getString("user"));
-                            item.put("message",msgele.getString("message"));
-                            item.put("time",vv);
+                        for (int i=0;i<msg.length();i++){
+                            Map<String, String> item = new HashMap<String, String>();
+                            JSONObject msgcon = msg.getJSONObject(i);
+                            item.put("user","Name : " + " " + msgcon.getString("name") + " " + "Country :" + " " + msgcon.getString("country"));
+                            item.put("message","Departure : " +msgcon.getString("departure")+ " "+ "Arrival : " +msgcon.getString("arrival")+
+                                    " "+"Expenses : " +msgcon.getString("expenses"));
                             data.add(0,item);
                         }
 
                         return true;
                     }
-                    else
-                    {
-                        Toast t = Toast.makeText(MicroblogActivity.this.getApplicationContext(),
-                                error,Toast.LENGTH_SHORT);
-                        t.show();
-                        return false;
-                    }
-
                 }
             } catch (MalformedURLException e) {
                 Log.e("LoadMessageTask", "Invalid URL");
@@ -171,7 +162,7 @@ public class MicroblogActivity extends ActionBarActivity implements Runnable {
             if (result) {
                 adapter.notifyDataSetChanged();
                 lastUpdate = System.currentTimeMillis();
-                Toast t = Toast.makeText(MicroblogActivity.this.getApplicationContext(),
+                Toast t = Toast.makeText(chatactivity.this.getApplicationContext(),
                         "Updated the timeline",
                         Toast.LENGTH_SHORT);
                 t.show();
@@ -185,17 +176,24 @@ public class MicroblogActivity extends ActionBarActivity implements Runnable {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            String user = params[0];
-            String message = params[1];
+            String name = params[0];
+            String departure = params[1];
+            String arrival = params[2];
+            String country = params[3];
+            String expenses = params[4];
             HttpClient h = new DefaultHttpClient();
-            HttpPost p = new HttpPost("http://ict.siit.tu.ac.th/~u5522781541/timetable/post.php");
-            List<NameValuePair> values = new ArrayList<NameValuePair>();
-            values.add(new BasicNameValuePair("user", user));
-            values.add(new BasicNameValuePair("message", message));
-            values.add(new BasicNameValuePair("subject", courseid));
+            HttpPost p = new HttpPost("http://ict.siit.tu.ac.th/~u5522781285/post.php");
 
-            try {
-                p.setEntity(new UrlEncodedFormEntity(values));
+            List<NameValuePair> val = new ArrayList<NameValuePair>();
+            val.add(new BasicNameValuePair("name",name));
+            val.add(new BasicNameValuePair("departure",departure));
+            val.add(new BasicNameValuePair("arrival",arrival));
+            val.add(new BasicNameValuePair("country",country));
+            val.add(new BasicNameValuePair("expenses",expenses));
+
+            try{
+
+                p.setEntity(new UrlEncodedFormEntity(val));
                 HttpResponse response = h.execute(p);
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(response.getEntity().getContent()));
@@ -227,15 +225,13 @@ public class MicroblogActivity extends ActionBarActivity implements Runnable {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                Toast t = Toast.makeText(MicroblogActivity.this.getApplicationContext(),
+                Toast t = Toast.makeText(chatactivity.this.getApplicationContext(),
                         "Successfully post your status",
                         Toast.LENGTH_SHORT);
                 t.show();
-                LoadMessageTask task = new LoadMessageTask();
-                task.execute();
             }
             else {
-                Toast t = Toast.makeText(MicroblogActivity.this.getApplicationContext(),
+                Toast t = Toast.makeText(chatactivity.this.getApplicationContext(),
                         "Unable to post your status",
                         Toast.LENGTH_SHORT);
                 t.show();
@@ -247,7 +243,7 @@ public class MicroblogActivity extends ActionBarActivity implements Runnable {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_microblog, menu);
+        getMenuInflater().inflate(R.menu.menu_chatactivity, menu);
         return true;
     }
 

@@ -40,6 +40,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void buttonClicked (View v){
 
+
         TextView tv = (TextView)findViewById(R.id.tvOutput);
 
         EditText Input = (EditText)findViewById(R.id.Input);

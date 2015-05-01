@@ -99,4 +99,17 @@
             android:textColor="#ff2d7488" />
     </LinearLayout>
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chitchat."
+        android:id="@+id/chat"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:onClick="Currency"
+        android:textColor="#ffff2ab2"
+        android:layout_alignEnd="@+id/gallery" />
+
 </RelativeLayout>

@@ -31,6 +31,10 @@ public class firstpage extends ActionBarActivity {
             Intent i = new Intent(this, cal.class);
             startActivity(i);
         }
+        if(v.getId()==R.id.chat){
+            Intent i = new Intent(this, chatactivity.class);
+            startActivity(i);
+        }
     }
 
 

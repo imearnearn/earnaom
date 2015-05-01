@@ -1,0 +1,129 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.macintoshhd.earnaom.chatactivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/etName"
+        android:hint="NAME"
+        android:layout_below="@+id/textView8"
+        android:layout_alignStart="@+id/textView13"
+        android:layout_alignEnd="@+id/chat" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Chit Chat Club"
+        android:id="@+id/textView8"
+        android:textColor="#ffffa0d9"
+        android:textSize="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/textView12" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/etDeparture"
+        android:background="#41fbff35"
+        android:layout_below="@+id/etName"
+        android:layout_centerHorizontal="true"
+        android:hint="DDMMYY" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/etArrival"
+        android:background="#57fff26f"
+        android:layout_marginTop="23dp"
+        android:layout_below="@+id/etDeparture"
+        android:layout_alignStart="@+id/etCountry"
+        android:hint="DDMMYY" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Departure"
+        android:id="@+id/textView10"
+        android:layout_above="@+id/etArrival"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="arrival"
+        android:id="@+id/textView11"
+        android:layout_alignTop="@+id/etArrival" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Country"
+        android:id="@+id/textView12"
+        android:textSize="15dp"
+        android:layout_below="@+id/etArrival"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="33dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etExpenses"
+        android:background="#738effe6"
+        android:layout_below="@+id/chat"
+        android:layout_alignStart="@+id/etDeparture"
+        android:layout_toStartOf="@+id/chat"
+        android:hint="in USD($) Currency" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="expenses"
+        android:id="@+id/textView13"
+        android:textSize="15dp"
+        android:layout_alignTop="@+id/etExpenses"
+        android:layout_toStartOf="@+id/etExpenses" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_below="@+id/etExpenses"
+        android:layout_alignEnd="@+id/chat"
+        android:layout_marginTop="59dp"
+        android:background="#8b79ffb4" />
+
+    <Button
+        android:layout_width="20dp"
+        android:layout_height="25dp"
+        android:text="OK"
+        android:id="@+id/chat"
+        android:layout_alignParentEnd="true"
+        android:onClick="buttonClicked"
+        android:textColor="#ffff3000"
+        android:background="#a4fadfff"
+        android:layout_below="@+id/textView12"
+        android:layout_toEndOf="@+id/etArrival" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="20dp"
+        android:id="@+id/etCountry"
+        android:background="#9dffaa39"
+        android:layout_above="@+id/chat"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
